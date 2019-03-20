@@ -1,0 +1,390 @@
+{
+	"info": {
+		"_postman_id": "65813c4d-d457-46a4-87d1-091b5644a362",
+		"name": "RestApiBooksTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ApiBooksGet_VerifyEmptyStore",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + \"Expected: \"+ pm.environment.get(\"varResponseCode200\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode200\");",
+							"",
+							"tests[\"Verify empty store?\"] = jsonData.Data === String.Empty; "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdPut_VerifyRequiredFields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"pm.test(\"Validasyon - Field 'author' is required\", function () {",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"varErrorMessageFieldRequired\"));",
+							"});",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + \"Expected: \"+ pm.environment.get(\"varResponseCode400\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode400\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{varBookIdPutValid}},\r\n\r\n  \"title\": \"{{varTitlePutValid}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdPutValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdPutValid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdPut_VerifyFieldCannotBeEmpty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"pm.test(\"Validasyon - Field 'title' cannot be empty\", function () {",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"varErrorMessageCannotBeEmpty\"));",
+							"});",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + \"Expected: \"+ pm.environment.get(\"varResponseCode400\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode400\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{varBookIdPutValid}},\r\n  \"author\": \"{{varAuthorPutValid}}\",\r\n  \"title\": \" \"\r\n}"
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdPutValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdPutValid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdPut_VerifyIdFieldIsReadOnly",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"pm.test(\"Validasyon - The 'Id' field is read only\", function () {",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"varErrorMessageIdFieldIsReadOnly\"));",
+							"});",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + \"Expected: \"+ pm.environment.get(\"varResponseCode400\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode400\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{varBookIdPutValid}},\r\n  \"author\": \"{{varAuthorPutValid}}\",\r\n  \"title\": \"{{varTitlePutValid}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdFirstGetValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdFirstGetValid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdPut_VerifyCreateNewBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"id attribute döndü mü?\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+							"});\r",
+							"pm.test(\"author attribute döndü mü?\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"author\");\r",
+							"});\r",
+							"pm.test(\"title attribute döndü mü?\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"title\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \r",
+							"       \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = \r",
+							"        responseTime < pm.environment.get(\"varResponseTime\");\r",
+							"        \r",
+							"tests[\"Status code? \" + \r",
+							"       \"Expected: \"+ pm.environment.get(\"varResponseCode200\") + \", \" + \"Actual: \" + responseCode.code] = \r",
+							"        responseCode.code == pm.environment.get(\"varResponseCode200\");\r",
+							"        \r",
+							"tests[\"Response döndü mü?\"] = jsonData.Data !== null; \r",
+							"\r",
+							"tests[\"id doğru döndü mü? - \" + \"Actual: \" + jsonData.id] = jsonData.id == pm.environment.get(\"varBookIdPutValid\");\r",
+							"tests[\"author doğru döndü mü? - \" + \"Actual: \" + jsonData.author] = jsonData.author == pm.environment.get(\"varAuthorPutValid\");\r",
+							"tests[\"title doğru döndü mü? - \" + \"Actual: \" + jsonData.title] = jsonData.title == pm.environment.get(\"varTitlePutValid\");\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{varBookIdPutValid}},\r\n  \"author\": \"{{varAuthorPutValid}}\",\r\n  \"title\": \"{{varTitlePutValid}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdPutValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdPutValid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdGet_VerifyReturnSameBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"id attribute döndü mü?\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"id\");",
+							"});",
+							"pm.test(\"author attribute döndü mü?\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"author\");",
+							"});",
+							"pm.test(\"title attribute döndü mü?\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"title\");",
+							"});",
+							"",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + ",
+							"       \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + ",
+							"       \"Expected: \"+ pm.environment.get(\"varResponseCode200\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode200\");",
+							"        ",
+							"tests[\"Response döndü mü?\"] = jsonData.Data !== null; ",
+							"",
+							"tests[\"id doğru döndü mü? - \" + \"Actual: \" + jsonData.id] = jsonData.id == pm.environment.get(\"varBookIdPutValid\");",
+							"tests[\"author doğru döndü mü? - \" + \"Actual: \" + jsonData.author] = jsonData.author == pm.environment.get(\"varAuthorPutValid\");",
+							"tests[\"title doğru döndü mü? - \" + \"Actual: \" + jsonData.title] = jsonData.title == pm.environment.get(\"varTitlePutValid\");",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdPutValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdPutValid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ApiBooksByIdPut_VerifyCannotCreateDuplicateBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07e06abf-f1ec-4452-abc3-4a37e504939f",
+						"exec": [
+							"pm.test(\"Validasyon - Another book with similar title and author already exists\", function () {",
+							"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"varErrorMessageCannotCreateDuplicateBook\"));",
+							"});",
+							"",
+							"tests[\"Response time < \" + pm.environment.get(\"varResponseTime\") + \" ms altında mı? \" + \"Expected: \"+ pm.environment.get(\"varResponseTime\") + \", \" + \"Actual: \" + responseTime] = ",
+							"        responseTime < pm.environment.get(\"varResponseTime\");",
+							"        ",
+							"tests[\"Status code? \" + \"Expected: \"+ pm.environment.get(\"varResponseCode406\") + \", \" + \"Actual: \" + responseCode.code] = ",
+							"        responseCode.code == pm.environment.get(\"varResponseCode406\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{varBookIdPutValid}},\r\n  \"author\": \"{{varAuthorPutValid}}\",\r\n  \"title\": \"{{varTitlePutValid}}\"\r\n}"
+				},
+				"url": {
+					"raw": "{{ApiTestCase.API_ROOT}}/api/books/{{varBookIdPutValid}}",
+					"host": [
+						"{{ApiTestCase.API_ROOT}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"{{varBookIdPutValid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
